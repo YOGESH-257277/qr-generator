@@ -26,14 +26,24 @@
     <div class="container">
         <h1>How was your experience?</h1>
         <div class="stars">
-            <a href="/submit_rating/1" class="star">★</a>
-            <a href="/submit_rating/2" class="star">★</a>
-            <a href="/submit_rating/3" class="star">★</a>
-            <a href="/submit_rating/4" class="star">★</a>
-            <a href="/submit_rating/5" class="star">★</a>
+            <span onclick="submitRating(1)" class="star">★</span>
+            <span onclick="submitRating(2)" class="star">★</span>
+            <span onclick="submitRating(3)" class="star">★</span>
+            <span onclick="submitRating(4)" class="star">★</span>
+            <span onclick="submitRating(5)" class="star">★</span>
         </div>
     </div>
     <script>
+        function submitRating(rating) {
+            fetch(`/.netlify/functions/api/submit_rating/${rating}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    }
+                });
+        }
+
         document.querySelectorAll('.star').forEach(star => {
             star.addEventListener('mouseover', function() {
                 this.style.color = '#ffd700';
@@ -53,3 +63,4 @@
     </script>
 </body>
 </html>
+
