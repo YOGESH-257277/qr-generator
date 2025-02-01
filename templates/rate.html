@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rate Our Shop</title>
+    <style>
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .stars {
+            font-size: 48px;
+            cursor: pointer;
+        }
+        .star {
+            color: #ddd;
+            padding: 5px;
+            transition: color 0.2s;
+        }
+        .star:hover,
+        .star:hover ~ .star {
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>How was your experience?</h1>
+        <div class="stars">
+            <a href="/submit_rating/1" class="star">★</a>
+            <a href="/submit_rating/2" class="star">★</a>
+            <a href="/submit_rating/3" class="star">★</a>
+            <a href="/submit_rating/4" class="star">★</a>
+            <a href="/submit_rating/5" class="star">★</a>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('mouseover', function() {
+                this.style.color = '#ffd700';
+                let prevSibling = this.previousElementSibling;
+                while(prevSibling) {
+                    prevSibling.style.color = '#ffd700';
+                    prevSibling = prevSibling.previousElementSibling;
+                }
+            });
+            
+            star.addEventListener('mouseout', function() {
+                document.querySelectorAll('.star').forEach(s => {
+                    s.style.color = '#ddd';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
