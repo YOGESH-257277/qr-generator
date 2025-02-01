@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from serverless_wsgi import handle_request
 import qrcode
@@ -10,9 +10,15 @@ from email.mime.multipart import MIMEMultipart
 import os
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={
+    r"/*": {
+        "origins": "*",
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
 
-# Environment variables (set these in Netlify)
+# Environment variables
 SHOP_EMAIL = os.environ.get('SHOP_EMAIL', 'dharuvijain@gmail.com')
 GOOGLE_REVIEW_URL = os.environ.get('GOOGLE_REVIEW_URL', 'https://search.google.com/local/writereview?placeid=ChIJcVeLi8PHxokRcGC_upcoRXM')
 DOMAIN = os.environ.get('DOMAIN', 'your-netlify-domain.netlify.app')
@@ -67,5 +73,22 @@ def submit_rating(rating):
             'redirect': '/thank_you.html'
         })
 
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
+
 def handler(event, context):
+    if event['httpMethod'] == 'OPTIONS':
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
+            }
+        }
     return handle_request(app, event, context)
+
